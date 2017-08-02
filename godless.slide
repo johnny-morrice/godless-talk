@@ -76,3 +76,23 @@ magically appear.  This is the interface that IPFS provides to Godless:
 
 Naturally, there are other CAS systems in existence.  I'm interested in porting
 Godless to support these systems.
+
+* Time for an example:
+
+Godless supports two operations on its CRDTS.  First, a join.  This adds data
+into Godless:
+
+.code join/join.go
+
+* Example, part two
+
+Now we can get the data back with a select:
+
+.code select/select.go
+
+* Cryptography and data consistency
+
+So we have a database where any peer can write any data they like. How do we
+keep it consitent?
+
+Godless uses public key cryptography to ensure data consistency.
