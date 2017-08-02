@@ -1,0 +1,21 @@
+A peer-to-peer lite database in Go
+
+Johnny Morrice
+https://jmorrice.teoma.org.uk
+
+* This is a talk about p2p and databases
+
+We're going to imagine a future where data flows lightly and freely between
+applications without infrastructure, without the Cloud, and without your PC
+combusting spontaneously.
+
+Why would anyone want to mate these concepts?
+
+There are many reasons, but this talk describes an easy-to-use system for simple
+apps.  The motivations are:
+
+- Convenience (in not having to set up server infrastructure)
+- Thrift (in not having to pay Amazon money to use their cloud)
+- Independence (from corporations and governments)
+
+In roughly that order of priority.
