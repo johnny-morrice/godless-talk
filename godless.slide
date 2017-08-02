@@ -1,15 +1,15 @@
-A peer-to-peer lite database in Go
+Godless: a peer-to-peer lite database in Go
 
 Johnny Morrice
 https://jmorrice.teoma.org.uk
 
-* This is a talk about p2p and databases
+* This is a talk about P2P and databases
 
 We're going to imagine a future where data flows lightly and freely between
 applications without infrastructure, without the Cloud, and without your PC
 combusting spontaneously.
 
-Why would anyone want to mate these concepts?
+P2P and databases. Why would anyone want to mate these concepts?
 
 There are many reasons, but this talk describes an easy-to-use system for simple
 apps.  The motivations are:
@@ -19,3 +19,60 @@ apps.  The motivations are:
 - Independence (from corporations and governments)
 
 In roughly that order of priority.
+
+* What is a peer-to-peer system?
+
+Peer-to-peer is an application architecture where application instances perform
+an equal role as peers in a network.  This is traditionally contrasted with the
+client-server model, where the server holds all the cards and the client is a
+dumb shmuck.
+
+What does that mean for a database?
+
+Our database will be a network of nodes, which together hold the dataset.
+
+Since we are interested in convenience, thrift, and simplicity, to enable simple
+apps, we are going to defenestrate two concepts immediately: consensus and
+clustering.  These are ideas which have made for some great systems, but we're
+not going to talk about them here.
+
+* Conflict-Free Replicated Datatypes
+
+Godless is based around CRDT types and content addressable storage.
+
+Put simply, a CRDT is a datastructure that anyone can join bits into without
+creating a conflict or inconsistency.
+
+CRDT theory mandates one of the following must hold to achieve consistency
+across the network:
+
+- A node which has mutated must convey the details of that mutation to every other node in the network.
+- A node which has mutated must send its entire state to some nodes in the network.
+
+Godless uses the latter approach, and is therefore a State-based CRDT.
+
+* Content-Addressable Storage
+
+Sending your entire state to another peer sounds like it could be a heavy
+operation.
+
+Luckily, we use a Content-Addressable Storage mechanism provided by the
+Interplanetary File System.
+
+So for a node to share its entire state with another peer, it only has to send
+the hash of its current HEAD rather than the entire datastructure.  Naturally,
+you can see this offloads a lot of work to IPFS.
+
+* IPFS is a global filesystem
+
+IPFS is a global content addressable filesystem.  You put your data in, and get
+a hash.  Later, someone else can put in that hash, and the original data will
+magically appear.  This is the interface that IPFS provides to Godless:
+
+	type ContentAddressableStorage interface {
+		Cat(hash string) (io.ReadCloser, error)
+		Add(r io.Reader) (string, error)
+	}
+
+Naturally, there are other CAS systems in existence.  I'm interested in porting
+Godless to support these systems.
