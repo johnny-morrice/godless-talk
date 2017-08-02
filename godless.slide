@@ -1,7 +1,8 @@
 Godless: a peer-to-peer lite database in Go
 
 Johnny Morrice
-https://jmorrice.teoma.org.uk
+https://github.com/johnny-morrice/godless
+john@functorama.com
 
 * This is a talk about P2P and databases
 
@@ -90,9 +91,52 @@ Now we can get the data back with a select:
 
 .play select/select.go /^func selectQuery/,/^}/
 
+* Client tooling
+
+That's a nasty data dump!  But if you run `godless query console`, you'll see
+a nice formatted data rows, like this:
+
+	> select cars where str_glob(driver, "Mr*")
+	-------------------------------------
+	| Table | Row  | Entry  | Point     |
+	-------------------------------------
+	| cars  | car1 | driver | Mr Speedy |
+	-------------------------------------
+
 * Cryptography and data consistency
 
 So we have a database where any peer can write any data they like. How do we
 keep it consitent?
 
-Godless uses public key cryptography to ensure data consistency.
+Godless uses public key cryptography to ensure data consistency.  E.g:
+
+	join books
+		signed "QmdLPjSq1RprujGUuH3ATYe4zifEtDRR6LtxMtDqsAfyec"
+		rows (@key=book50, authorName="EL James", publisher="Don't wanna know")
+
+	select books
+		signed "QmdLPjSq1RprujGUuH3ATYe4zifEtDRR6LtxMtDqsAfyec"
+
+I really need to figure out a shorthand for running these queries in gopresent,
+but you can try this with `godless query console`.
+
+* Data model
+
+The godless data model is pretty simple.
+
+We have an Index.  This is a structure located on every node.  It contains
+metadata about the actual data in the system.  The index is a CRDT that is
+joined when peers update each other.
+
+The actual data we call a Namespace.  Each "join" command actually creates a new
+Namespace, saved in a separate blob on IPFS.  The Namespace is a CRDT that is
+joined when a select command asks to retrieve data.
+
+* Moving forward
+
+Godless has been a fun side-project so far and it has opened my eyes to some
+interesting questions.
+
+- The select where clause is actually a restriction on the join operation on Namespaces.  Considered in this light, I may change the syntax.
+- I have recent begun using godless as a base for other projects and it is rough around the edges.
+- Performance improvements are planned for the next release.
