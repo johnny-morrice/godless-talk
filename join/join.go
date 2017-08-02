@@ -3,26 +3,25 @@ package main
 import (
 	"fmt"
 
-	"github.com/johnny-morrice/godless"
 	"github.com/johnny-morrice/godless/api"
+	"github.com/johnny-morrice/godless/http"
 	"github.com/johnny-morrice/godless/query"
 )
 
 func main() {
-	options := godless.Options{
-
-		KeyStore: godless.MakeKeyStore(),
+	options := http.ClientOptions{
+		ServerAddr: "http://localhost:8085",
 	}
-
-	godless, err := godless.New(options)
+	client, err := http.MakeClient(options)
 	dieOnError(err)
+	joinQuery(client)
+}
 
-	query, err := query.Compile("join cars rows (key=@car1, driver=?)", "Mr Speedy")
+func joinQuery(client api.Client) {
+	query, err := query.Compile("join cars rows (@key=car1, driver=?)", "Mr Speedy")
 	dieOnError(err)
-
-	response, err := godless.Send(api.MakeQueryRequest(query))
+	response, err := client.Send(api.MakeQueryRequest(query))
 	dieOnError(err)
-
 	fmt.Println(response)
 }
 

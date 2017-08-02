@@ -80,15 +80,15 @@ Godless to support these systems.
 * Time for an example:
 
 Godless supports two operations on its CRDTS.  First, a join.  This adds data
-into Godless:
+into Godless.
 
-.code join/join.go
+.play join/join.go /^func joinQuery/,/^}/
 
 * Example, part two
 
 Now we can get the data back with a select:
 
-.code select/select.go
+.play select/select.go /^func selectQuery/,/^}/
 
 * Cryptography and data consistency
 
